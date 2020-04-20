@@ -13,6 +13,67 @@ use Illuminate\Http\Request;
 |
 */
 
+Route::get('/get-demo', function () {
+    getParams();
+});
+
+Route::post('/post-form-urlencode', function () {
+    postFormUrlEncode();
+});
+
+Route::post('/post-form-data', function () {
+    postFormData();
+});
+
+Route::post('/post-json', function () {
+    postJson();
+});
+
+Route::get('/index', "Controller@index");
+
+function getParams()
+{
+    $id = $_GET['id'];
+    $name = $_GET['name'];
+
+    echo $id. ' '.$name;
+}
+
+function postFormUrlEncode()
+{
+    $firstParam = $_POST['first_param'];
+    $secondParam = $_POST['second_param'];
+
+    echo $firstParam." ".$secondParam;
+}
+
+function postFormData()
+{
+    $firstParam = $_POST['first_param'];
+    $secondParam = $_POST['second_param'];
+
+    echo $firstParam." ".$secondParam;
+}
+
+function postJson()
+{
+    $res = file_get_contents("php://input");
+    $resArr = json_decode($res,true);
+
+    $firstParam = $resArr["first_param"];
+    $second_param = $resArr["second_param"];
+
+    echo $firstParam." ".$second_param;
+}
+
+Route::get('/user/login','JwtLoginController@login');
+
+Route::middleware(['jwt_auth'])->group(function () {
+    Route::get('/user/info','UserController@info');
+    Route::get('/user/info-cache','UserController@infoWithCache');
+});
+
+
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
